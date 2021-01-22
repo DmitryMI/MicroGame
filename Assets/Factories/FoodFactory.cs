@@ -11,5 +11,10 @@ namespace Assets.Factories
             Prefab = (GameObject)Resources.Load(PrefabPath, typeof(GameObject));
             ParentTransform = parentTransform;
         }
+
+        public override IEntity CreateEntity(IGameManager gameManager, Vector2 position)
+        {
+            return InstantiatePrefab(Prefab, gameManager, position);
+        }
     }
 }

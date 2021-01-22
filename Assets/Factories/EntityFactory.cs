@@ -11,7 +11,7 @@ namespace Assets.Factories
         protected IUpdateProvider ControllerUpdateProvider { get; set; }
         protected Transform ParentTransform { get; set; }
 
-        public IEntity CreateEntity(IGameManager gameManager, Vector2 position)
+        protected IEntity InstantiatePrefab(GameObject prefab, IGameManager gameManager, Vector2 position)
         {
             GameObject instance = Object.Instantiate(Prefab, position, Quaternion.identity, ParentTransform);
             IEntity entity = instance.GetComponent<IEntity>();
@@ -20,18 +20,9 @@ namespace Assets.Factories
             entity.GameManager = gameManager;
 
             gameManager.MapProvider.Entities.Add(entity);
-
-            if (entity is IMicro micro)
-            {
-                micro.UpdateProvider = MicroUpdateProvider;
-                ClosestProximityController closestProximityController =
-                    new ClosestProximityController(ControllerUpdateProvider);
-                closestProximityController.Controllable = micro;
-                micro.Controller = closestProximityController;
-                micro.BreedingFactory = this;
-            }
-
             return entity;
         }
+
+        public abstract IEntity CreateEntity(IGameManager gameManager, Vector2 position);
     }
 }

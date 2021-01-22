@@ -16,12 +16,17 @@ namespace Assets
 
         [SerializeField] private Vector2 _mapCenter;
 
+        [SerializeField] private BoxCollider2D _mapCollider2D;
+
         private List<IEntity> _entities = new List<IEntity>();
         public IList<IEntity> Entities => _entities;
         public int MapCellularWidth => _width;
         public int MapCellularHeight => _height;
+        public float MapRealWidth => CellWidth * MapCellularWidth;
+        public float MapRealHeight => CellHeight * MapCellularHeight;
         public float CellWidth => 1;
         public float CellHeight => 1;
+        public Vector2 MapCenter => _mapCenter;
 
         private void Start()
         {
@@ -29,11 +34,12 @@ namespace Assets
             {
                 float height = _camera.orthographicSize;
                 float width = height * _camera.aspect;
-                _height = (int) (height / CellHeight);
-                _width = (int) (width / CellWidth);
+                _height = 2 * (int) (height / CellHeight);
+                _width = 2 * (int) (width / CellWidth);
 
                 _mapCenter = _camera.transform.position;
             }
+            _mapCollider2D.size = new Vector2(_width * CellWidth, _height * CellHeight);
         }
 
         public IEntity[] GetCellEntities(int x, int y)
@@ -74,9 +80,39 @@ namespace Assets
 
         public Vector2 TranslateToReal(Vector2Int cellPosition)
         {
-            float x = cellPosition.x * CellWidth * 1.5f - MapCellularWidth * CellWidth / 2 + _mapCenter.x;
-            float y = cellPosition.y * CellHeight * 1.5f - MapCellularHeight * CellHeight / 2 + _mapCenter.y;
+            float x = cellPosition.x * CellWidth - MapCellularWidth * CellWidth / 2 + _mapCenter.x;
+            float y = cellPosition.y * CellHeight - MapCellularHeight * CellHeight / 2 + _mapCenter.y;
             return new Vector2(x, y);
+        }
+
+        private void OnTriggerExit2D(Collider2D colliderExiting)
+        {
+            var obj = colliderExiting.gameObject;
+            float x = obj.transform.position.x;
+            float y = obj.transform.position.y;
+
+            float mapWidth = CellWidth * MapCellularWidth;
+            float mapHeight = CellHeight * MapCellularHeight;
+            if (x < _mapCenter.x - mapWidth / 2)
+            {
+                x = _mapCenter.x - mapWidth / 2;
+            }
+
+            if (y < _mapCenter.y - mapHeight / 2)
+            {
+                y = _mapCenter.y - mapHeight / 2;
+            }
+
+            if (x >= _mapCenter.x + mapWidth / 2)
+            {
+                x = _mapCenter.x + mapWidth / 2 - 0.01f;
+            }
+            if (y >= _mapCenter.y + mapHeight / 2)
+            {
+                y = _mapCenter.y + mapHeight / 2 - 0.01f;
+            }
+
+            obj.transform.position = new Vector3(x, y);
         }
     }
 }

@@ -21,11 +21,14 @@ namespace Assets.Entities
 
         [SerializeField] private double _minFoodForBreeding;
 
+        private Rigidbody2D _rigidbody;
+
         protected Vector2 MovementTarget { get; set; }
 
         protected virtual void Start()
         {
             LifetimeLeft = _maxLifetime;
+            _rigidbody = GetComponent<Rigidbody2D>();
         }
 
         public override double NutritionValue => _baseNutrition + FoodLeft;
@@ -75,6 +78,7 @@ namespace Assets.Entities
             Vector2 direction = MovementTarget - position;
             Vector2 motion = direction.normalized;
             Vector2 velocity = motion * MoveSpeed * deltaTime;
+
             transform.position += new Vector3(velocity.x, velocity.y);
         }
 

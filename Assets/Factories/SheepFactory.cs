@@ -19,5 +19,23 @@ namespace Assets.Factories
             Prefab = (GameObject)Resources.Load(PrefabPath, typeof(GameObject));
             ParentTransform = parentTransform;
         }
+
+        public override IEntity CreateEntity(IGameManager gameManager, Vector2 position)
+        {
+
+            IEntity entity = InstantiatePrefab(Prefab, gameManager, position);
+            if (entity is IMicro micro)
+            {
+                micro.UpdateProvider = MicroUpdateProvider;
+                SheepRunnerController closestProximityController =
+                    new SheepRunnerController(ControllerUpdateProvider);
+                closestProximityController.Controllable = micro;
+                micro.Controller = closestProximityController;
+                micro.BreedingFactory = this;
+            }
+
+            return entity;
+        }
+
     }
 }

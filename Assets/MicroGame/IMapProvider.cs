@@ -10,8 +10,12 @@ namespace Assets.MicroGame
 
         int MapCellularWidth { get; }
         int MapCellularHeight { get; }
+        float MapRealWidth { get; }
+        float MapRealHeight { get; }
         float CellWidth { get; }
         float CellHeight { get; }
+
+        Vector2 MapCenter { get; }
 
         IEntity[] GetCellEntities(int x, int y);
 
