@@ -373,10 +373,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _updateProvider: {fileID: 715446228}
   _mapProvider: {fileID: 1772548378}
-  _foodCount: 10
+  _foodCount: 20
   _sheepsCount: 3
   _wolvesCount: 1
-  _controllerLoopPeriod: 0.5
+  _controllerLoopPeriod: 0.2
+  _foodReplenishPeriod: 30
 --- !u!1 &1772548376
 GameObject:
   m_ObjectHideFlags: 0

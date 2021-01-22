@@ -24,6 +24,7 @@ namespace Assets.Entities
         }
         public abstract void OnUpdate(IUpdateProvider sender, float deltaTime);
         public bool IsUpdateableActive => this != null && gameObject != null;
+        public IGameManager GameManager { get; set; }
         public IEventReceiver[] EventReceivers => EventReceiversList.ToArray();
         public IMapProvider MapProvider { get; set; }
 
@@ -56,6 +57,7 @@ namespace Assets.Entities
         public void OnDeath()
         {
             IsAlive = false;
+            MapProvider.Entities.Remove(this);
             ReportDeath();
             UpdateProvider?.Remove(this);
             OnEntityDeath();

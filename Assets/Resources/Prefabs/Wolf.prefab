@@ -196,9 +196,9 @@ MonoBehaviour:
   _size: 1
   _baseNutrition: 0
   _food: 100
-  _moveSpeed: 1.2
+  _moveSpeed: 2
   _maxLifetime: 120
-  _minFoodForBreeding: 1000
+  _minFoodForBreeding: 500
 --- !u!58 &-67194856531885332
 CircleCollider2D:
   m_ObjectHideFlags: 0

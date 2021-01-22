@@ -17,7 +17,13 @@ namespace Assets
 
         [SerializeField] private float _controllerLoopPeriod;
 
+        [SerializeField] private float _foodReplenishPeriod;
+
         private IGameFactory _gameFactory;
+
+        private IUpdateProvider _foodReplenishUpdateProvider;
+
+        private float _foodReplenishTimeLeft;
 
         public IUpdateProvider UpdateProvider
         {
@@ -27,7 +33,17 @@ namespace Assets
 
         public void OnUpdate(IUpdateProvider sender, float deltaTime)
         {
-            
+            _foodReplenishTimeLeft -= deltaTime;
+            if (_foodReplenishTimeLeft <= 0)
+            {
+                ReplenishFood();
+                _foodReplenishTimeLeft = _foodReplenishPeriod;
+            }
+        }
+
+        private void ReplenishFood()
+        {
+            _gameFactory.CreateStaticFood();
         }
 
         public bool IsUpdateableActive => gameObject != null;
@@ -59,6 +75,7 @@ namespace Assets
 
         public void CreateGame()
         {
+            _foodReplenishTimeLeft = _foodReplenishPeriod;
             _gameFactory.CreateStaticFood();
             _gameFactory.CreateSheeps();
             _gameFactory.CreateWolves();

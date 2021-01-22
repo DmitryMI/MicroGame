@@ -23,7 +23,6 @@ namespace Assets
                 int y = Random.Range(0, MapProvider.MapCellularHeight);
                 Vector2 position = MapProvider.TranslateToReal(new Vector2Int(x, y));
                 IEntity food = factory.CreateEntity(GameManager, position);
-                MapProvider.Entities.Add(food);
             }
         }
 

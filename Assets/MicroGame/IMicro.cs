@@ -5,6 +5,7 @@ namespace Assets.MicroGame
     public interface IMicro : IEntity
     {
         IMicroController Controller { get; set; }
+        IEntityFactory BreedingFactory { get; set; }
         float MoveSpeed { get; }
         double FoodLeft { get; }
         double LifetimeLeft { get; }

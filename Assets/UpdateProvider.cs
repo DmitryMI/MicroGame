@@ -17,9 +17,11 @@ namespace Assets
 
         private readonly List<IUpdateable> _updateablesList = new List<IUpdateable>();
         private readonly List<IUpdateable> _removedUpdateables = new List<IUpdateable>();
+        private readonly List<IUpdateable> _addedUpdateables = new List<IUpdateable>();
+
         public void Add(IUpdateable updateable)
         {
-            _updateablesList.Add(updateable);
+            _addedUpdateables.Add(updateable);
         }
 
         public void Remove(IUpdateable updateable)
@@ -29,6 +31,12 @@ namespace Assets
 
         public void SendUpdates()
         {
+            foreach (var added in _addedUpdateables)
+            {
+                _updateablesList.Add(added);
+            }
+            _addedUpdateables.Clear();
+
             foreach (var updateable in _updateablesList)
             {
                 if (updateable.IsUpdateableActive)
@@ -77,17 +85,22 @@ namespace Assets
             return provider;
         }
 
-        private void DeleteSubUpdateProvider(SubUpdateProvider provider)
+        public void DeleteSubUpdateProvider(IUpdateProvider provider)
         {
-            StopCoroutine(provider.Coroutine);
-            _subUpdateProviders.Remove(provider);
-            Debug.Log(gameObject.name + $": {_subUpdateProviders.Count} sub providers left");
+            if (provider is SubUpdateProvider subProvider)
+            {
+                StopCoroutine(subProvider.Coroutine);
+                _subUpdateProviders.Remove(subProvider);
+                Debug.Log(gameObject.name + $": {_subUpdateProviders.Count} sub providers left");
+            }
         }
 
         private class SubUpdateProvider : IUpdateProvider
         {
             private readonly List<IUpdateable> _subUpdateables = new List<IUpdateable>();
             private readonly List<IUpdateable> _subRemovedUpdateables = new List<IUpdateable>();
+            private readonly List<IUpdateable> _subAddedUpdateables = new List<IUpdateable>();
+
             private float _prevUpdate;
             private readonly UpdateProvider _parentUpdateProvider;
             private bool _isRunning = true;
@@ -104,7 +117,7 @@ namespace Assets
 
             public void Add(IUpdateable updateable)
             {
-                _subUpdateables.Add(updateable);
+                _subAddedUpdateables.Add(updateable);
             }
 
             public void Remove(IUpdateable updateable)
@@ -114,6 +127,12 @@ namespace Assets
 
             public void SendUpdates()
             {
+                foreach (var added in _subAddedUpdateables)
+                {
+                    _subUpdateables.Add(added);
+                }
+                _subAddedUpdateables.Clear();
+
                 foreach (var updateable in _subUpdateables)
                 {
                     if (updateable.IsUpdateableActive)
@@ -125,18 +144,6 @@ namespace Assets
                 foreach (var removed in _subRemovedUpdateables)
                 {
                     _subUpdateables.Remove(removed);
-                    if (_subUpdateables.Count == 0)
-                    {
-                        _parentUpdateProvider.DeleteSubUpdateProvider(this);
-                        _isRunning = false;
-                    }
-                }
-
-                if (_subRemovedUpdateables.Count != 0)
-                {
-
-                    Debug.Log("subProvider" + $": {_subUpdateables.Count} sub-updateables left");
-
                 }
 
                 _subRemovedUpdateables.Clear();

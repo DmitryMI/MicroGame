@@ -10,7 +10,7 @@ namespace Assets.Controllers
     public class ClosestProximityController : IMicroController
     {
         private float _deltaTime;
-        protected IUpdateProvider UpdateProviderInternal;
+        protected IUpdateProvider UpdateProviderInternal { get; set; }
         public IUpdateProvider UpdateProvider
         {
             get => UpdateProviderInternal;
@@ -30,12 +30,8 @@ namespace Assets.Controllers
 
         public bool IsUpdateableActive => true;
 
-        private void ControllerLoop()
+        private void MotionDeciderLoop()
         {
-            if (Controllable == null)
-            {
-                return;
-            }
             IMapProvider mapProvider = Controllable.MapProvider;
             IEntity closestFood = null;
             float minDistance = float.PositiveInfinity;
@@ -71,6 +67,25 @@ namespace Assets.Controllers
             }
 
             Controllable.Move(closestFood.Position);
+        }
+
+        private void BreedingDeciderLoop()
+        {
+            if (Controllable.CanBreed)
+            {
+                Controllable.Breed();
+            }
+        }
+
+        private void ControllerLoop()
+        {
+            if (Controllable == null)
+            {
+                return;
+            }
+            
+            MotionDeciderLoop();
+            BreedingDeciderLoop();
         }
 
         public IMicro Controllable { get; set; }

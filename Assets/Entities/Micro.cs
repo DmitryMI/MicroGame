@@ -35,6 +35,7 @@ namespace Assets.Entities
         }
 
         public IMicroController Controller { get; set; }
+        public abstract IEntityFactory BreedingFactory { get; set; }
         public float MoveSpeed => _moveSpeed;
 
         public double FoodLeft
@@ -52,6 +53,10 @@ namespace Assets.Entities
 
         public void Eat(IEntity entity)
         {
+            if (!entity.IsAlive)
+            {
+                return;
+            }
             if (CanEat(entity))
             {
                 FoodLeft += entity.NutritionValue;

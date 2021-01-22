@@ -4,6 +4,7 @@ namespace Assets.MicroGame
 {
     public interface IEntity : IUpdateable
     {
+        IGameManager GameManager { get; set; }
         IEventReceiver[] EventReceivers { get; }
         IMapProvider MapProvider { get; set; }
         Vector2 Position { get; }

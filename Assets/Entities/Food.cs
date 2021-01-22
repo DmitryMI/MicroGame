@@ -18,5 +18,10 @@ namespace Assets.Entities
         {
             OnDeath();
         }
+
+        protected override void OnEntityDeath()
+        {
+            
+        }
     }
 }

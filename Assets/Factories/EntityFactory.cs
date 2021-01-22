@@ -17,6 +17,9 @@ namespace Assets.Factories
             IEntity entity = instance.GetComponent<IEntity>();
             entity.AddEventReceiver(gameManager);
             entity.MapProvider = gameManager.MapProvider;
+            entity.GameManager = gameManager;
+
+            gameManager.MapProvider.Entities.Add(entity);
 
             if (entity is IMicro micro)
             {
@@ -25,6 +28,7 @@ namespace Assets.Factories
                     new ClosestProximityController(ControllerUpdateProvider);
                 closestProximityController.Controllable = micro;
                 micro.Controller = closestProximityController;
+                micro.BreedingFactory = this;
             }
 
             return entity;
